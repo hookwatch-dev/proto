@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package hookwatch.webhook.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/webhook/v1;webhookv1";
+
+import "google/protobuf/timestamp.proto";
+
+// WebhookService handles webhook reception operations
+service WebhookService {
+  // GetEndpointBySlug looks up an endpoint by its slug and validates it's active
+  rpc GetEndpointBySlug(GetEndpointBySlugRequest) returns (GetEndpointBySlugResponse);
+
+  // CreateEvent saves an incoming webhook event to the database
+  rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
+}
+
+// RetryConfig defines retry behavior for webhook deliveries
+message RetryConfig {
+  // Maximum number of retry attempts
+  int32 max_retries = 1;
+
+  // Intervals between retries in seconds [60, 300, 1800, 7200, 86400]
+  repeated int32 intervals = 2;
+}
+
+// GetEndpointBySlugRequest is the request to lookup an endpoint
+message GetEndpointBySlugRequest {
+  // The endpoint slug (URL path identifier)
+  string slug = 1;
+}
+
+// GetEndpointBySlugResponse contains endpoint details
+message GetEndpointBySlugResponse {
+  // Endpoint UUID
+  string endpoint_id = 1;
+
+  // Owner user UUID
+  string user_id = 2;
+
+  // Target URL for webhook delivery
+  string destination_url = 3;
+
+  // Whether the endpoint is currently active
+  bool is_active = 4;
+
+  // Retry configuration for this endpoint
+  RetryConfig retry_config = 5;
+}
+
+// CreateEventRequest contains the incoming webhook data to save
+message CreateEventRequest {
+  // Endpoint ID (from GetEndpointBySlug)
+  string endpoint_id = 1;
+
+  // User ID (for pub/sub notifications)
+  string user_id = 2;
+
+  // HTTP method (POST, PUT, etc.)
+  string method = 3;
+
+  // HTTP headers from the webhook request
+  map<string, string> headers = 4;
+
+  // Request body
+  bytes body = 5;
+
+  // Source IP address of the webhook sender
+  string source_ip = 6;
+}
+
+// CreateEventResponse contains the created event details
+message CreateEventResponse {
+  // Generated event UUID
+  string event_id = 1;
+
+  // Event creation timestamp
+  google.protobuf.Timestamp created_at = 2;
+}

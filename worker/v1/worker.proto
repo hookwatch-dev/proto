@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package hookwatch.worker.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/worker/v1;workerv1";
+
+import "google/protobuf/timestamp.proto";
+
+// DeliveryReportService handles delivery result reporting from worker to core
+service DeliveryReportService {
+  // ReportDeliveryResult reports the result of a webhook delivery attempt
+  rpc ReportDeliveryResult(DeliveryResultRequest) returns (DeliveryResultResponse);
+}
+
+// DeliveryStatus enum matching entity.DeliveryStatus
+enum DeliveryStatus {
+  DELIVERY_STATUS_UNSPECIFIED = 0;
+  DELIVERY_STATUS_PENDING = 1;
+  DELIVERY_STATUS_DELIVERED = 2;
+  DELIVERY_STATUS_FAILED = 3;
+  DELIVERY_STATUS_RETRYING = 4;
+}
+
+// DeliveryResultRequest contains the webhook delivery result
+message DeliveryResultRequest {
+  // Event ID
+  string event_id = 1;
+
+  // User ID (for pub/sub notification)
+  string user_id = 2;
+
+  // Endpoint ID
+  string endpoint_id = 3;
+
+  // Final delivery status
+  DeliveryStatus status = 4;
+
+  // HTTP status code from destination (0 if connection failed)
+  int32 status_code = 5;
+
+  // Response body from destination (truncated if too large)
+  bytes response_body = 6;
+
+  // Current retry count
+  int32 retry_count = 7;
+
+  // Next retry timestamp (only set if status is RETRYING)
+  google.protobuf.Timestamp next_retry_at = 8;
+
+  // Delivery timestamp (only set if status is DELIVERED)
+  google.protobuf.Timestamp delivered_at = 9;
+}
+
+// DeliveryResultResponse acknowledges the delivery report
+message DeliveryResultResponse {
+  // Whether the report was processed successfully
+  bool success = 1;
+
+  // Error message if failed
+  string error = 2;
+}
