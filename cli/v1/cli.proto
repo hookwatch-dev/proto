@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// CLIService handles bidirectional streaming for CLI clients
+service CLIService {
+  // EventStream establishes a bidirectional stream for receiving webhook events
+  rpc EventStream(stream CLIRequest) returns (stream CLIResponse);
+}
+
+// CLIRequest represents messages from CLI client to server
+message CLIRequest {
+  oneof request {
+    AuthenticateRequest authenticate = 1;
+    SubscribeRequest subscribe = 2;
+    UnsubscribeRequest unsubscribe = 3;
+    AckRequest ack = 4;
+    PingRequest ping = 5;
+  }
+}
+
+// AuthenticateRequest authenticates the CLI session using an API key
+message AuthenticateRequest {
+  // API key in format hk_xxxxx
+  string api_key = 1;
+}
+
+// SubscribeRequest subscribes to events for an endpoint
+message SubscribeRequest {
+  oneof identifier {
+    string endpoint_id = 1;  // Subscribe by endpoint UUID
+    string slug = 2;         // Subscribe by endpoint slug
+  }
+}
+
+// UnsubscribeRequest unsubscribes from an endpoint
+message UnsubscribeRequest {
+  string endpoint_id = 1;
+}
+
+// AckRequest acknowledges successful receipt and forwarding of an event
+message AckRequest {
+  string event_id = 1;
+  bool success = 2;           // Whether forward to localhost succeeded
+  int32 status_code = 3;      // HTTP status from localhost
+  string error_message = 4;   // Error message if failed
+}
+
+// PingRequest keeps the connection alive
+message PingRequest {}
+
+// CLIResponse represents messages from server to CLI client
+message CLIResponse {
+  oneof response {
+    AuthenticateResponse authenticate = 1;
+    SubscribeResponse subscribe = 2;
+    UnsubscribeResponse unsubscribe = 3;
+    WebhookEvent event = 4;
+    PongResponse pong = 5;
+    ErrorResponse error = 6;
+  }
+}
+
+// AuthenticateResponse confirms authentication
+message AuthenticateResponse {
+  bool success = 1;
+  string user_id = 2;
+  string error = 3;
+}
+
+// SubscribeResponse confirms subscription to an endpoint
+message SubscribeResponse {
+  bool success = 1;
+  string endpoint_id = 2;
+  string endpoint_name = 3;
+  string slug = 4;
+  string error = 5;
+}
+
+// UnsubscribeResponse confirms unsubscription
+message UnsubscribeResponse {
+  bool success = 1;
+  string endpoint_id = 2;
+}
+
+// WebhookEvent represents an incoming webhook to forward to localhost
+message WebhookEvent {
+  string event_id = 1;
+  string endpoint_id = 2;
+  string endpoint_name = 3;
+  string slug = 4;
+  string method = 5;
+  map<string, string> headers = 6;
+  bytes body = 7;
+  string source_ip = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+
+// PongResponse responds to ping
+message PongResponse {}
+
+// ErrorResponse contains error details
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+}

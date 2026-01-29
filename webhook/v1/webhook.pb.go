@@ -77,6 +77,88 @@ func (x *RetryConfig) GetIntervals() []int32 {
 	return nil
 }
 
+// SignatureConfig defines webhook signature verification and signing settings
+type SignatureConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Whether inbound signature verification is enabled
+	InboundEnabled bool `protobuf:"varint,1,opt,name=inbound_enabled,json=inboundEnabled,proto3" json:"inbound_enabled,omitempty"`
+	// Header name containing the signature (e.g., "X-Hub-Signature-256")
+	InboundHeader string `protobuf:"bytes,2,opt,name=inbound_header,json=inboundHeader,proto3" json:"inbound_header,omitempty"`
+	// Secret for verifying inbound signatures (HMAC-SHA256)
+	InboundSecret string `protobuf:"bytes,3,opt,name=inbound_secret,json=inboundSecret,proto3" json:"inbound_secret,omitempty"`
+	// Whether outbound signature signing is enabled
+	OutboundEnabled bool `protobuf:"varint,4,opt,name=outbound_enabled,json=outboundEnabled,proto3" json:"outbound_enabled,omitempty"`
+	// Secret for signing outbound deliveries (HMAC-SHA256)
+	OutboundSecret string `protobuf:"bytes,5,opt,name=outbound_secret,json=outboundSecret,proto3" json:"outbound_secret,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *SignatureConfig) Reset() {
+	*x = SignatureConfig{}
+	mi := &file_webhook_v1_webhook_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignatureConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignatureConfig) ProtoMessage() {}
+
+func (x *SignatureConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_webhook_v1_webhook_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignatureConfig.ProtoReflect.Descriptor instead.
+func (*SignatureConfig) Descriptor() ([]byte, []int) {
+	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SignatureConfig) GetInboundEnabled() bool {
+	if x != nil {
+		return x.InboundEnabled
+	}
+	return false
+}
+
+func (x *SignatureConfig) GetInboundHeader() string {
+	if x != nil {
+		return x.InboundHeader
+	}
+	return ""
+}
+
+func (x *SignatureConfig) GetInboundSecret() string {
+	if x != nil {
+		return x.InboundSecret
+	}
+	return ""
+}
+
+func (x *SignatureConfig) GetOutboundEnabled() bool {
+	if x != nil {
+		return x.OutboundEnabled
+	}
+	return false
+}
+
+func (x *SignatureConfig) GetOutboundSecret() string {
+	if x != nil {
+		return x.OutboundSecret
+	}
+	return ""
+}
+
 // GetEndpointBySlugRequest is the request to lookup an endpoint
 type GetEndpointBySlugRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -88,7 +170,7 @@ type GetEndpointBySlugRequest struct {
 
 func (x *GetEndpointBySlugRequest) Reset() {
 	*x = GetEndpointBySlugRequest{}
-	mi := &file_webhook_v1_webhook_proto_msgTypes[1]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -100,7 +182,7 @@ func (x *GetEndpointBySlugRequest) String() string {
 func (*GetEndpointBySlugRequest) ProtoMessage() {}
 
 func (x *GetEndpointBySlugRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_webhook_v1_webhook_proto_msgTypes[1]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,7 +195,7 @@ func (x *GetEndpointBySlugRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEndpointBySlugRequest.ProtoReflect.Descriptor instead.
 func (*GetEndpointBySlugRequest) Descriptor() ([]byte, []int) {
-	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{1}
+	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetEndpointBySlugRequest) GetSlug() string {
@@ -135,14 +217,16 @@ type GetEndpointBySlugResponse struct {
 	// Whether the endpoint is currently active
 	IsActive bool `protobuf:"varint,4,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
 	// Retry configuration for this endpoint
-	RetryConfig   *RetryConfig `protobuf:"bytes,5,opt,name=retry_config,json=retryConfig,proto3" json:"retry_config,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	RetryConfig *RetryConfig `protobuf:"bytes,5,opt,name=retry_config,json=retryConfig,proto3" json:"retry_config,omitempty"`
+	// Signature configuration for this endpoint
+	SignatureConfig *SignatureConfig `protobuf:"bytes,6,opt,name=signature_config,json=signatureConfig,proto3" json:"signature_config,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GetEndpointBySlugResponse) Reset() {
 	*x = GetEndpointBySlugResponse{}
-	mi := &file_webhook_v1_webhook_proto_msgTypes[2]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -154,7 +238,7 @@ func (x *GetEndpointBySlugResponse) String() string {
 func (*GetEndpointBySlugResponse) ProtoMessage() {}
 
 func (x *GetEndpointBySlugResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_webhook_v1_webhook_proto_msgTypes[2]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -167,7 +251,7 @@ func (x *GetEndpointBySlugResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEndpointBySlugResponse.ProtoReflect.Descriptor instead.
 func (*GetEndpointBySlugResponse) Descriptor() ([]byte, []int) {
-	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{2}
+	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetEndpointBySlugResponse) GetEndpointId() string {
@@ -205,6 +289,13 @@ func (x *GetEndpointBySlugResponse) GetRetryConfig() *RetryConfig {
 	return nil
 }
 
+func (x *GetEndpointBySlugResponse) GetSignatureConfig() *SignatureConfig {
+	if x != nil {
+		return x.SignatureConfig
+	}
+	return nil
+}
+
 // CreateEventRequest contains the incoming webhook data to save
 type CreateEventRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -226,7 +317,7 @@ type CreateEventRequest struct {
 
 func (x *CreateEventRequest) Reset() {
 	*x = CreateEventRequest{}
-	mi := &file_webhook_v1_webhook_proto_msgTypes[3]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -238,7 +329,7 @@ func (x *CreateEventRequest) String() string {
 func (*CreateEventRequest) ProtoMessage() {}
 
 func (x *CreateEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_webhook_v1_webhook_proto_msgTypes[3]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -251,7 +342,7 @@ func (x *CreateEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEventRequest.ProtoReflect.Descriptor instead.
 func (*CreateEventRequest) Descriptor() ([]byte, []int) {
-	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{3}
+	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateEventRequest) GetEndpointId() string {
@@ -309,7 +400,7 @@ type CreateEventResponse struct {
 
 func (x *CreateEventResponse) Reset() {
 	*x = CreateEventResponse{}
-	mi := &file_webhook_v1_webhook_proto_msgTypes[4]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -321,7 +412,7 @@ func (x *CreateEventResponse) String() string {
 func (*CreateEventResponse) ProtoMessage() {}
 
 func (x *CreateEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_webhook_v1_webhook_proto_msgTypes[4]
+	mi := &file_webhook_v1_webhook_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -334,7 +425,7 @@ func (x *CreateEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEventResponse.ProtoReflect.Descriptor instead.
 func (*CreateEventResponse) Descriptor() ([]byte, []int) {
-	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{4}
+	return file_webhook_v1_webhook_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateEventResponse) GetEventId() string {
@@ -359,16 +450,23 @@ const file_webhook_v1_webhook_proto_rawDesc = "" +
 	"\vRetryConfig\x12\x1f\n" +
 	"\vmax_retries\x18\x01 \x01(\x05R\n" +
 	"maxRetries\x12\x1c\n" +
-	"\tintervals\x18\x02 \x03(\x05R\tintervals\".\n" +
+	"\tintervals\x18\x02 \x03(\x05R\tintervals\"\xdc\x01\n" +
+	"\x0fSignatureConfig\x12'\n" +
+	"\x0finbound_enabled\x18\x01 \x01(\bR\x0einboundEnabled\x12%\n" +
+	"\x0einbound_header\x18\x02 \x01(\tR\rinboundHeader\x12%\n" +
+	"\x0einbound_secret\x18\x03 \x01(\tR\rinboundSecret\x12)\n" +
+	"\x10outbound_enabled\x18\x04 \x01(\bR\x0foutboundEnabled\x12'\n" +
+	"\x0foutbound_secret\x18\x05 \x01(\tR\x0eoutboundSecret\".\n" +
 	"\x18GetEndpointBySlugRequest\x12\x12\n" +
-	"\x04slug\x18\x01 \x01(\tR\x04slug\"\xe1\x01\n" +
+	"\x04slug\x18\x01 \x01(\tR\x04slug\"\xb3\x02\n" +
 	"\x19GetEndpointBySlugResponse\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12'\n" +
 	"\x0fdestination_url\x18\x03 \x01(\tR\x0edestinationUrl\x12\x1b\n" +
 	"\tis_active\x18\x04 \x01(\bR\bisActive\x12D\n" +
-	"\fretry_config\x18\x05 \x01(\v2!.hookwatch.webhook.v1.RetryConfigR\vretryConfig\"\xa4\x02\n" +
+	"\fretry_config\x18\x05 \x01(\v2!.hookwatch.webhook.v1.RetryConfigR\vretryConfig\x12P\n" +
+	"\x10signature_config\x18\x06 \x01(\v2%.hookwatch.webhook.v1.SignatureConfigR\x0fsignatureConfig\"\xa4\x02\n" +
 	"\x12CreateEventRequest\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12\x17\n" +
@@ -400,29 +498,31 @@ func file_webhook_v1_webhook_proto_rawDescGZIP() []byte {
 	return file_webhook_v1_webhook_proto_rawDescData
 }
 
-var file_webhook_v1_webhook_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_webhook_v1_webhook_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_webhook_v1_webhook_proto_goTypes = []any{
 	(*RetryConfig)(nil),               // 0: hookwatch.webhook.v1.RetryConfig
-	(*GetEndpointBySlugRequest)(nil),  // 1: hookwatch.webhook.v1.GetEndpointBySlugRequest
-	(*GetEndpointBySlugResponse)(nil), // 2: hookwatch.webhook.v1.GetEndpointBySlugResponse
-	(*CreateEventRequest)(nil),        // 3: hookwatch.webhook.v1.CreateEventRequest
-	(*CreateEventResponse)(nil),       // 4: hookwatch.webhook.v1.CreateEventResponse
-	nil,                               // 5: hookwatch.webhook.v1.CreateEventRequest.HeadersEntry
-	(*timestamppb.Timestamp)(nil),     // 6: google.protobuf.Timestamp
+	(*SignatureConfig)(nil),           // 1: hookwatch.webhook.v1.SignatureConfig
+	(*GetEndpointBySlugRequest)(nil),  // 2: hookwatch.webhook.v1.GetEndpointBySlugRequest
+	(*GetEndpointBySlugResponse)(nil), // 3: hookwatch.webhook.v1.GetEndpointBySlugResponse
+	(*CreateEventRequest)(nil),        // 4: hookwatch.webhook.v1.CreateEventRequest
+	(*CreateEventResponse)(nil),       // 5: hookwatch.webhook.v1.CreateEventResponse
+	nil,                               // 6: hookwatch.webhook.v1.CreateEventRequest.HeadersEntry
+	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
 }
 var file_webhook_v1_webhook_proto_depIdxs = []int32{
 	0, // 0: hookwatch.webhook.v1.GetEndpointBySlugResponse.retry_config:type_name -> hookwatch.webhook.v1.RetryConfig
-	5, // 1: hookwatch.webhook.v1.CreateEventRequest.headers:type_name -> hookwatch.webhook.v1.CreateEventRequest.HeadersEntry
-	6, // 2: hookwatch.webhook.v1.CreateEventResponse.created_at:type_name -> google.protobuf.Timestamp
-	1, // 3: hookwatch.webhook.v1.WebhookService.GetEndpointBySlug:input_type -> hookwatch.webhook.v1.GetEndpointBySlugRequest
-	3, // 4: hookwatch.webhook.v1.WebhookService.CreateEvent:input_type -> hookwatch.webhook.v1.CreateEventRequest
-	2, // 5: hookwatch.webhook.v1.WebhookService.GetEndpointBySlug:output_type -> hookwatch.webhook.v1.GetEndpointBySlugResponse
-	4, // 6: hookwatch.webhook.v1.WebhookService.CreateEvent:output_type -> hookwatch.webhook.v1.CreateEventResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	1, // 1: hookwatch.webhook.v1.GetEndpointBySlugResponse.signature_config:type_name -> hookwatch.webhook.v1.SignatureConfig
+	6, // 2: hookwatch.webhook.v1.CreateEventRequest.headers:type_name -> hookwatch.webhook.v1.CreateEventRequest.HeadersEntry
+	7, // 3: hookwatch.webhook.v1.CreateEventResponse.created_at:type_name -> google.protobuf.Timestamp
+	2, // 4: hookwatch.webhook.v1.WebhookService.GetEndpointBySlug:input_type -> hookwatch.webhook.v1.GetEndpointBySlugRequest
+	4, // 5: hookwatch.webhook.v1.WebhookService.CreateEvent:input_type -> hookwatch.webhook.v1.CreateEventRequest
+	3, // 6: hookwatch.webhook.v1.WebhookService.GetEndpointBySlug:output_type -> hookwatch.webhook.v1.GetEndpointBySlugResponse
+	5, // 7: hookwatch.webhook.v1.WebhookService.CreateEvent:output_type -> hookwatch.webhook.v1.CreateEventResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_webhook_v1_webhook_proto_init() }
@@ -436,7 +536,7 @@ func file_webhook_v1_webhook_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_webhook_v1_webhook_proto_rawDesc), len(file_webhook_v1_webhook_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

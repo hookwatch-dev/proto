@@ -24,6 +24,24 @@ message RetryConfig {
   repeated int32 intervals = 2;
 }
 
+// SignatureConfig defines webhook signature verification and signing settings
+message SignatureConfig {
+  // Whether inbound signature verification is enabled
+  bool inbound_enabled = 1;
+
+  // Header name containing the signature (e.g., "X-Hub-Signature-256")
+  string inbound_header = 2;
+
+  // Secret for verifying inbound signatures (HMAC-SHA256)
+  string inbound_secret = 3;
+
+  // Whether outbound signature signing is enabled
+  bool outbound_enabled = 4;
+
+  // Secret for signing outbound deliveries (HMAC-SHA256)
+  string outbound_secret = 5;
+}
+
 // GetEndpointBySlugRequest is the request to lookup an endpoint
 message GetEndpointBySlugRequest {
   // The endpoint slug (URL path identifier)
@@ -46,6 +64,9 @@ message GetEndpointBySlugResponse {
 
   // Retry configuration for this endpoint
   RetryConfig retry_config = 5;
+
+  // Signature configuration for this endpoint
+  SignatureConfig signature_config = 6;
 }
 
 // CreateEventRequest contains the incoming webhook data to save
