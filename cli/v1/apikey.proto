@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// APIKeyService handles API key management for CLI clients.
+service APIKeyService {
+  rpc ListAPIKeys(ListAPIKeysRequest) returns (ListAPIKeysResponse);
+  rpc GetAPIKey(GetAPIKeyRequest) returns (GetAPIKeyResponse);
+  rpc CreateAPIKey(CreateAPIKeyRequest) returns (CreateAPIKeyResponse);
+  rpc DeleteAPIKey(DeleteAPIKeyRequest) returns (DeleteAPIKeyResponse);
+}
+
+// APIKey represents an API key.
+message APIKey {
+  string id = 1;
+  string name = 2;
+  string prefix = 3;
+  string key = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp last_used_at = 6;
+  google.protobuf.Timestamp expires_at = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message ListAPIKeysRequest {
+  string api_key = 1;
+}
+
+message ListAPIKeysResponse {
+  repeated APIKey keys = 1;
+}
+
+message GetAPIKeyRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message GetAPIKeyResponse {
+  APIKey key = 1;
+}
+
+message CreateAPIKeyRequest {
+  string api_key = 1;
+  string name = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message CreateAPIKeyResponse {
+  APIKey key = 1;
+}
+
+message DeleteAPIKeyRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message DeleteAPIKeyResponse {}

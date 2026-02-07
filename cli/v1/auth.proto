@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// AuthService handles authentication for CLI clients.
+service AuthService {
+  // Login authenticates a user with email and password.
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  // GetMe returns the current authenticated user (by access token).
+  rpc GetMe(GetMeRequest) returns (GetMeResponse);
+}
+
+// User represents an authenticated user.
+message User {
+  string id = 1;
+  string email = 2;
+  string plan = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+// TokenPair represents JWT access and refresh tokens.
+message TokenPair {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  User user = 1;
+  TokenPair tokens = 2;
+}
+
+message GetMeRequest {
+  string access_token = 1;
+}
+
+message GetMeResponse {
+  User user = 1;
+}

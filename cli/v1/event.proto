@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// EventService handles webhook event management for CLI clients.
+service EventService {
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc GetEvent(GetEventRequest) returns (GetEventResponse);
+  rpc RetryEvent(RetryEventRequest) returns (RetryEventResponse);
+  rpc ReplayEvent(ReplayEventRequest) returns (ReplayEventResponse);
+  rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse);
+  rpc GetEventMetrics(GetEventMetricsRequest) returns (GetEventMetricsResponse);
+  rpc CountEvents(CountEventsRequest) returns (CountEventsResponse);
+  rpc ExportEvents(ExportEventsRequest) returns (ExportEventsResponse);
+}
+
+// Event represents a webhook event.
+message Event {
+  string id = 1;
+  string endpoint_id = 2;
+  string method = 3;
+  map<string, string> headers = 4;
+  string body = 5;
+  string source_ip = 6;
+  string delivery_status = 7;
+  int32 status_code = 8;
+  bool has_status_code = 9;
+  string response_body = 10;
+  int32 retry_count = 11;
+  google.protobuf.Timestamp next_retry_at = 12;
+  google.protobuf.Timestamp delivered_at = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+}
+
+// EventDailyMetrics represents metrics for a single day.
+message EventDailyMetrics {
+  string date = 1;
+  int32 total = 2;
+  int32 delivered = 3;
+  int32 failed = 4;
+}
+
+// EventMetrics represents aggregated event metrics.
+message EventMetrics {
+  int32 total_events = 1;
+  int32 delivered_count = 2;
+  int32 failed_count = 3;
+  int32 pending_count = 4;
+  int32 retrying_count = 5;
+  repeated EventDailyMetrics daily_breakdown = 6;
+}
+
+message ListEventsRequest {
+  string api_key = 1;
+  string endpoint_id = 2;
+  string status = 3;
+  int32 status_code = 4;
+  string from = 5;
+  string to = 6;
+  int32 limit = 7;
+  int32 offset = 8;
+  string search = 9;
+}
+
+message ListEventsResponse {
+  repeated Event events = 1;
+}
+
+message GetEventRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message GetEventResponse {
+  Event event = 1;
+}
+
+message RetryEventRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message RetryEventResponse {}
+
+message ReplayEventRequest {
+  string api_key = 1;
+  string id = 2;
+  string body = 3;
+  map<string, string> headers = 4;
+  string method = 5;
+}
+
+message ReplayEventResponse {}
+
+message DeleteEventRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message DeleteEventResponse {}
+
+message GetEventMetricsRequest {
+  string api_key = 1;
+  int32 days = 2;
+  string endpoint_id = 3;
+}
+
+message GetEventMetricsResponse {
+  EventMetrics metrics = 1;
+}
+
+message CountEventsRequest {
+  string api_key = 1;
+  string endpoint_id = 2;
+  string status = 3;
+  string from = 4;
+  string to = 5;
+}
+
+message CountEventsResponse {
+  int64 count = 1;
+}
+
+message ExportEventsRequest {
+  string api_key = 1;
+  string format = 2;
+  string endpoint_id = 3;
+  string status = 4;
+  string from = 5;
+  string to = 6;
+}
+
+message ExportEventsResponse {
+  bytes data = 1;
+  string content_type = 2;
+}

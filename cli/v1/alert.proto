@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// AlertService handles alert management for CLI clients.
+service AlertService {
+  rpc ListAlerts(ListAlertsRequest) returns (ListAlertsResponse);
+  rpc GetAlert(GetAlertRequest) returns (GetAlertResponse);
+  rpc CreateAlert(CreateAlertRequest) returns (CreateAlertResponse);
+  rpc UpdateAlert(UpdateAlertRequest) returns (UpdateAlertResponse);
+  rpc DeleteAlert(DeleteAlertRequest) returns (DeleteAlertResponse);
+  rpc GetAlertsByEndpoint(GetAlertsByEndpointRequest) returns (GetAlertsByEndpointResponse);
+}
+
+// Alert represents an alert configuration.
+message Alert {
+  string id = 1;
+  string endpoint_id = 2;
+  string type = 3;
+  string target = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message ListAlertsRequest {
+  string api_key = 1;
+}
+
+message ListAlertsResponse {
+  repeated Alert alerts = 1;
+}
+
+message GetAlertRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message GetAlertResponse {
+  Alert alert = 1;
+}
+
+message CreateAlertRequest {
+  string api_key = 1;
+  string endpoint_id = 2;
+  string type = 3;
+  string target = 4;
+}
+
+message CreateAlertResponse {
+  Alert alert = 1;
+}
+
+message UpdateAlertRequest {
+  string api_key = 1;
+  string id = 2;
+  string endpoint_id = 3;
+  string type = 4;
+  string target = 5;
+  bool is_active = 6;
+}
+
+message UpdateAlertResponse {
+  Alert alert = 1;
+}
+
+message DeleteAlertRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message DeleteAlertResponse {}
+
+message GetAlertsByEndpointRequest {
+  string api_key = 1;
+  string endpoint_id = 2;
+}
+
+message GetAlertsByEndpointResponse {
+  repeated Alert alerts = 1;
+}

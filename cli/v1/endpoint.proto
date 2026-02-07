@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package hookwatch.cli.v1;
+
+option go_package = "github.com/hookwatch-dev/proto/cli/v1;cliv1";
+
+import "google/protobuf/timestamp.proto";
+
+// EndpointService handles webhook endpoint management for CLI clients.
+service EndpointService {
+  rpc ListEndpoints(ListEndpointsRequest) returns (ListEndpointsResponse);
+  rpc GetEndpoint(GetEndpointRequest) returns (GetEndpointResponse);
+  rpc CreateEndpoint(CreateEndpointRequest) returns (CreateEndpointResponse);
+  rpc UpdateEndpoint(UpdateEndpointRequest) returns (UpdateEndpointResponse);
+  rpc DeleteEndpoint(DeleteEndpointRequest) returns (DeleteEndpointResponse);
+  rpc RegenerateInboundSecret(RegenerateInboundSecretRequest) returns (RegenerateInboundSecretResponse);
+  rpc RegenerateOutboundSecret(RegenerateOutboundSecretRequest) returns (RegenerateOutboundSecretResponse);
+}
+
+// EndpointRetryConfig represents retry settings for an endpoint.
+message EndpointRetryConfig {
+  int32 max_retries = 1;
+  repeated int32 intervals = 2;
+}
+
+// EndpointSignatureConfig represents signature settings for an endpoint.
+message EndpointSignatureConfig {
+  bool inbound_enabled = 1;
+  string inbound_header = 2;
+  string inbound_secret = 3;
+  bool outbound_enabled = 4;
+  string outbound_secret = 5;
+}
+
+// Endpoint represents a webhook endpoint.
+message Endpoint {
+  string id = 1;
+  string slug = 2;
+  string name = 3;
+  string destination_url = 4;
+  bool is_active = 5;
+  EndpointRetryConfig retry_config = 6;
+  EndpointSignatureConfig signature_config = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message ListEndpointsRequest {
+  string api_key = 1;
+}
+
+message ListEndpointsResponse {
+  repeated Endpoint endpoints = 1;
+}
+
+message GetEndpointRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message GetEndpointResponse {
+  Endpoint endpoint = 1;
+}
+
+message CreateEndpointRequest {
+  string api_key = 1;
+  string name = 2;
+  string destination_url = 3;
+}
+
+message CreateEndpointResponse {
+  Endpoint endpoint = 1;
+}
+
+message UpdateEndpointRequest {
+  string api_key = 1;
+  string id = 2;
+  string name = 3;
+  string destination_url = 4;
+  bool is_active = 5;
+  EndpointRetryConfig retry_config = 6;
+  EndpointSignatureConfig signature_config = 7;
+}
+
+message UpdateEndpointResponse {
+  Endpoint endpoint = 1;
+}
+
+message DeleteEndpointRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message DeleteEndpointResponse {}
+
+message RegenerateInboundSecretRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message RegenerateInboundSecretResponse {
+  Endpoint endpoint = 1;
+}
+
+message RegenerateOutboundSecretRequest {
+  string api_key = 1;
+  string id = 2;
+}
+
+message RegenerateOutboundSecretResponse {
+  Endpoint endpoint = 1;
+}
